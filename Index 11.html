@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RKF - Catálogo de Adaptaciones</title>
+    
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        [v-cloak] { display: none; }
+        .btn-player { border: 2px solid #e2e8f0; transition: all 0.2s; font-weight: bold; border-radius: 0.75rem; text-align: center; padding: 0.5rem 0; font-size: 0.875rem; cursor: pointer; }
+        .btn-player-active { background-color: #1e1b4b; border-color: #1e1b4b; color: white; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
+        .btn-player-inactive { background-color: white; color: #64748b; }
+        .btn-player-inactive:hover { border-color: #cbd5e1; }
+        .attr-pill { border: 1px solid #e2e8f0; padding: 0.25rem 0.75rem; border-radius: 0.75rem; font-size: 10px; font-weight: bold; color: #64748b; background-color: #f8fafc; display: flex; align-items: center; gap: 0.4rem; }
+        .btn-cat { border: 2px solid #f1f5f9; transition: all 0.2s; font-weight: 900; font-size: 10px; text-transform: uppercase; padding: 0.6rem 0.75rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; cursor: pointer; }
+        .btn-cat-active { background-color: #1e1b4b; border-color: #1e1b4b; color: white; }
+        .btn-cat-inactive { background-color: white; color: #94a3b8; }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-100 p-4 font-sans text-slate-900">
+
+<div id="app" v-cloak class="max-w-5xl mx-auto pb-20">
+    
+    <header class="mb-8 flex justify-between items-end">
+        <div>
+            <h1 class="text-3xl font-black text-slate-900 tracking-tighter uppercase leading-none">Adaptaciones <span class="text-indigo-600">RKF</span></h1>
+            <p class="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest">Base de datos dinámica</p>
+        </div>
+        <div v-if="!loading" class="text-[10px] font-bold text-slate-400 uppercase">
+            {{ filteredGames.length }} juegos encontrados
+        </div>
+    </header>
+
+    <!-- PANTALLA DE CARGA -->
+    <div v-if="loading" class="py-20 text-center">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-indigo-600 border-t-transparent"></div>
+        <p class="mt-4 text-xs font-black text-slate-400 uppercase tracking-widest">Sincronizando con Google Sheets...</p>
+    </div>
+
+    <!-- PANEL DE FILTROS -->
+    <section v-else class="bg-white p-6 rounded-[2rem] shadow-xl border border-slate-200 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+            
+            <!-- Jugadores -->
+            <div class="md:col-span-5">
+                <h3 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">Jugadores</h3>
+                <div class="grid grid-cols-5 gap-2">
+                    <button v-for="n in 15" :key="n" @click="togglePlayer(n)" 
+                            :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
+                        {{n}}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Edad y Material -->
+            <div class="md:col-span-4 space-y-4">
+                <div>
+                    <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-widest">Edad del jugador más joven</h3>
+                    <select v-model="filters.age" class="w-full bg-slate-50 border-2 border-slate-100 p-2.5 rounded-xl text-xs font-bold outline-none focus:border-indigo-500">
+                        <option :value="99">14 años o más (Sin filtro)</option>
+                        <option :value="13">12-13 años</option>
+                        <option :value="11">10-11 años</option>
+                        <option :value="9">8-9 años</option>
+                        <option :value="7">6-7 años</option>
+                    </select>
+                </div>
+                <div>
+                    <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-widest">Material</h3>
+                    <select v-model="filters.material" class="w-full bg-slate-50 border-2 border-slate-100 p-2.5 rounded-xl text-xs font-bold outline-none focus:border-indigo-500">
+                        <option value="3-Maxi">Maxi (Todo el catálogo)</option>
+                        <option value="2-Standard">Standard</option>
+                        <option value="1-Mini">Mini</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Ordenación y Toggle -->
+            <div class="md:col-span-3">
+                <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-widest">Ordenar resultados</h3>
+                <select v-model="sortBy" class="w-full bg-slate-50 border-2 border-slate-200 p-2.5 rounded-xl text-xs font-bold outline-none mb-6">
+                    <option value="ideal">Configuración Ideal</option>
+                    <option value="ranking">Ranking BGG</option>
+                    <option value="newest">Últimas novedades</option>
+                </select>
+
+                <button @click="toggleExtraFilters" class="text-xs font-black uppercase text-indigo-600 flex items-center gap-2">
+                    <i class="fa-solid" :class="showExtra ? 'fa-minus' : 'fa-plus'"></i>
+                    {{ showExtra ? 'Menos filtros' : 'Más filtros' }}
+                </button>
+            </div>
+        </div>
+
+        <!-- FILTROS EXTRA -->
+        <div v-if="showExtra" class="mt-8 pt-8 border-t border-slate-100 animate-fade-in grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="text-xs font-black uppercase text-indigo-600 mb-3 tracking-widest">Tiempo para empezar</h3>
+                <select v-model="filters.time" class="w-full bg-white border-2 border-indigo-50 p-2.5 rounded-xl text-xs font-bold">
+                    <option value="3-Long">Cualquier tiempo</option>
+                    <option value="2-Courant">Normal (Express + Courant)</option>
+                    <option value="1-Express">Je suis pressé (Solo Express)</option>
+                </select>
+            </div>
+            <div>
+                <h3 class="text-xs font-black uppercase text-indigo-600 mb-3 tracking-widest">Categorías BGG</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <button v-for="cat in categories" @click="toggleCat(cat.name)" 
+                            :class="filters.cats.includes(cat.name) ? 'btn-cat-active' : 'btn-cat-inactive'" class="btn-cat">
+                        <i :class="cat.icon"></i> {{ cat.label }}
+                    </button>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-xs font-black uppercase text-indigo-600 mb-3 tracking-widest">Catálogo RFK</h3>
+                <div class="flex gap-2">
+                    <button @click="filters.onlyNew = !filters.onlyNew" :class="filters.onlyNew ? 'bg-indigo-900 text-white' : 'bg-white text-indigo-900 border-indigo-100'" class="btn-cat flex-1">✨ Novedad</button>
+                    <button @click="filters.onlyHeart = !filters.onlyHeart" :class="filters.onlyHeart ? 'bg-indigo-900 text-white' : 'bg-white text-indigo-900 border-indigo-100'" class="btn-cat flex-1">❤️ Favorito</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LISTADO -->
+    <div v-if="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div v-for="game in filteredGames" :key="game.id" 
+             @click="expandedId = (expandedId === game.id ? null : game.id)"
+             class="bg-white rounded-[2rem] border-2 border-slate-200 overflow-hidden cursor-pointer hover:border-indigo-400 transition-all shadow-sm"
+             :class="{'ring-4 ring-indigo-500/20 border-indigo-500 shadow-xl': expandedId === game.id}">
+            
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-lg font-black text-slate-900 uppercase leading-tight tracking-tighter">{{ game.name }}</h2>
+                            <span v-if="game.heart" class="text-red-500 text-xs">❤️</span>
+                        </div>
+                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">{{ game.origin }}</p>
+                    </div>
+                    <div class="text-[10px] font-black text-slate-300">#{{ game.rankingBGG }}</div>
+                </div>
+
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <div class="attr-pill"><i class="fa-solid fa-users text-indigo-300"></i> {{ game.nbPersonnes }}</div>
+                    <div class="attr-pill"><i class="fa-solid fa-bolt text-indigo-300"></i> {{ game.timeStart }}</div>
+                    <div class="attr-pill"><i class="fa-solid fa-cake-candles text-indigo-300"></i> {{ game.ageMin }}+</div>
+                    <div class="attr-pill"><i class="fa-solid fa-box text-indigo-300"></i> {{ game.config }}</div>
+                </div>
+
+                <p class="text-slate-600 text-xs leading-relaxed" :class="expandedId === game.id ? '' : 'line-clamp-1'">
+                    {{ game.description }}
+                </p>
+
+                <div v-if="expandedId === game.id" class="mt-6 pt-6 border-t border-slate-100 space-y-6 animate-fade-in">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Fidelidad al original</h4>
+                            <span class="text-[10px] font-black text-indigo-600">{{ game.fidelityScore }}/4</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 italic bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                            {{ game.fidelityDetails }}
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <a v-if="game.links.mobile" :href="game.links.mobile" target="_blank" class="bg-indigo-600 text-white text-[10px] font-black py-3 rounded-xl text-center flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-mobile-screen"></i> REGLAS MÓVIL
+                        </a>
+                        <div class="grid grid-cols-2 gap-2">
+                            <a v-if="game.links.pdf" :href="game.links.pdf" target="_blank" class="bg-red-500 text-white text-[10px] font-black py-3 rounded-xl text-center flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
+                            </a>
+                            <a v-if="game.links.bgg" :href="game.links.bgg" target="_blank" class="bg-slate-800 text-white text-[10px] font-black py-3 rounded-xl text-center flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-external-link"></i> BGG
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-slate-50 text-center py-2 border-t border-slate-100 text-[10px] text-slate-200">
+                <i class="fa-solid" :class="expandedId === game.id ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const { createApp } = Vue
+
+createApp({
+    data() {
+        return {
+            loading: true,
+            expandedId: null,
+            showExtra: false,
+            selectedPlayers: [],
+            sortBy: 'ideal',
+            games: [],
+            categories: [
+                { name: "Famille", label: "Familia", icon: "fa-solid fa-people-group" },
+                { name: "Party", label: "Party", icon: "fa-solid fa-masks-theater" },
+                { name: "Abstrait", label: "Abstracto", icon: "fa-solid fa-chess-board" },
+                { name: "Stratégie", label: "Estrategia", icon: "fa-solid fa-gears" }
+            ],
+            filters: {
+                age: 99,
+                material: '3-Maxi',
+                time: '3-Long',
+                cats: [],
+                onlyNew: false,
+                onlyHeart: false
+            }
+        }
+    },
+    mounted() {
+        this.fetchData();
+    },
+    computed: {
+        filteredGames() {
+            return this.games.filter(game => {
+                // 1. Jugadores (AND + Excluir rojos)
+                const matchPlayer = this.selectedPlayers.length === 0 || 
+                                   this.selectedPlayers.every(p => game.players[p] && !game.players[p].includes('🔴'));
+                // 2. Edad
+                const matchAge = game.ageMin <= this.filters.age;
+                // 3. Material
+                const configRank = { 'Mini': 1, 'Standard': 2, 'Maxi': 3 };
+                const matchMaterial = configRank[game.config] <= configRank[this.filters.material.split('-')[1] || this.filters.material];
+                // 4. Tiempo
+                const timeRank = { '1-Express': 1, '2-Courant': 2, '3-Long': 3 };
+                const matchTime = timeRank[game.timeStart] <= timeRank[this.filters.time];
+                // 5. Categorías (Comprobamos si las columnas específicas tienen contenido)
+                const matchCats = this.filters.cats.length === 0 || this.filters.cats.some(c => game.catBGG[c]);
+                // 6. Novedad y Favorito
+                const matchNew = this.filters.onlyNew ? game.isNew : true;
+                const matchHeart = this.filters.onlyHeart ? game.heart : true;
+
+                return matchPlayer && matchAge && matchMaterial && matchTime && matchCats && matchNew && matchHeart;
+            }).sort((a, b) => {
+                if (this.sortBy === 'ideal') return this.calculateScore(b) - this.calculateScore(a);
+                if (this.sortBy === 'ranking') return (parseInt(a.rankingBGG) || 99999) - (parseInt(b.rankingBGG) || 99999);
+                if (this.sortBy === 'newest') return new Date(b.dateAdded) - new Date(a.dateAdded);
+                return 0;
+            });
+        }
+    },
+    methods: {
+        async fetchData() {
+            // URL con tqx=out:csv es a veces más estable para AJAX
+            const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQiSGJxvRlizw98U7hsFPScVZv7YKL9a-lL1AuXMfGhUz1oCl6Eb7SVSsTOdRIDHQy4ORsseMTkf6YH/pub?gid=0&single=true&output=csv";
+            
+            Papa.parse(SHEET_URL, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: (results) => {
+                    this.games = results.data.filter(row => row.Nom_Adaptation).map((row, index) => {
+                        return {
+                            id: index,
+                            name: row.Nom_Adaptation,
+                            description: row.Description,
+                            origin: row.Jeu_Origine,
+                            ageMin: parseInt(row.Age_Min) || 0,
+                            config: row.Config_materiel ? (row.Config_materiel.includes('-') ? row.Config_materiel.split('-')[1] : row.Config_materiel) : 'Maxi',
+                            nbPersonnes: row.Nb_personnes,
+                            timeStart: row.Temps_avant_demarrage || '3-Long',
+                            rankingBGG: row.Ranking_BGG || 'N/A',
+                            isNew: row.New !== "",
+                            heart: row.Favori !== "",
+                            dateAdded: row.Date_Publication || "2000-01-01",
+                            fidelityScore: this.parseFidelity(row.Fidelite),
+                            fidelityDetails: row.Details_Fidelite,
+                            catBGG: {
+                                Famille: row.Famille !== "",
+                                Party: row.Party !== "",
+                                Abstrait: row.Abstrait !== "",
+                                Stratégie: row.Stratégie !== ""
+                            },
+                            players: this.extractPlayers(row),
+                            links: {
+                                mobile: row.Lien_Regles_Mobiles,
+                                pdf: row.Lien_PDF,
+                                bgg: row.Lien_BGG
+                            }
+                        }
+                    });
+                    this.loading = false;
+                },
+                error: (err) => {
+                    alert("Error de conexión con la base de datos.");
+                    this.loading = false;
+                }
+            });
+        },
+        extractPlayers(row) {
+            let p = {};
+            for (let i = 1; i <= 21; i++) {
+                let val = row[i.toString()];
+                if (val) p[i] = val;
+            }
+            return p;
+        },
+        parseFidelity(text) {
+            if (!text) return 0;
+            if (text.includes("Très bonne")) return 4;
+            if (text.includes("Bonne")) return 3;
+            if (text.includes("Moyenne")) return 2;
+            return 1;
+        },
+        togglePlayer(n) {
+            const i = this.selectedPlayers.indexOf(n);
+            if (i > -1) this.selectedPlayers.splice(i, 1);
+            else this.selectedPlayers.push(n);
+        },
+        toggleCat(name) {
+            const i = this.filters.cats.indexOf(name);
+            if (i > -1) this.filters.cats.splice(i, 1);
+            else this.filters.cats.push(name);
+        },
+        toggleExtraFilters() {
+            this.showExtra = !this.showExtra;
+            if (!this.showExtra) {
+                this.filters.time = '3-Long';
+                this.filters.cats = [];
+                this.filters.onlyNew = false;
+                this.filters.onlyHeart = false;
+            }
+        },
+        calculateScore(game) {
+            if (this.selectedPlayers.length === 0) return 0;
+            let score = 0;
+            this.selectedPlayers.forEach(p => {
+                const status = game.players[p];
+                if (status?.includes('🟢')) score += 100;
+                else if (status?.includes('🟡')) score += 10;
+            });
+            return score;
+        },
+        resetFilters() {
+            this.selectedPlayers = [];
+            this.filters.age = 99;
+            this.filters.material = '3-Maxi';
+            this.showExtra = false;
+        }
+    }
+}).mount('#app')
+</script>
+</body>
+</html>
