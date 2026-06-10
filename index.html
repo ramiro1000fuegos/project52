@@ -130,9 +130,9 @@
                 <div class="flex justify-between items-start mb-4">
                     <div class="flex-1">
                         <h2 class="text-lg font-black text-slate-900 leading-tight uppercase">{{ game.name }} <span v-if="game.heart">❤️</span></h2>
-                        <p class="text-[10px] text-slate-400 font-bold mt-1 uppercase">{{ game.origin }}</p>
+                        <p class="text-[12px] text-slate-400 font-bold mt-1 uppercase">{{ game.origin }}</p>
                     </div>
-                    <div class="text-[10px] font-black text-slate-300">#{{ game.rankingBGG }}</div>
+                    <div class="text-[12px] font-black text-slate-300">#{{ game.rankingBGG }}</div>
                 </div>
 
                 <div class="flex flex-wrap gap-2 mb-4">
@@ -150,10 +150,10 @@
                         <p class="text-slate-500 italic">{{ game.fidelityDetails }}</p>
                     </div>
                     <div class="flex flex-col gap-2">
-                        <a :href="game.links.mobile" target="_blank" @click.stop class="bg-indigo-600 text-white text-[10px] font-black py-3 rounded-xl text-center">RÈGLES MOBILE</a>
+                        <a :href="game.links.mobile" target="_blank" @click.stop class="bg-indigo-600 text-white text-[12px] font-black py-3 rounded-xl text-center">RÈGLES MOBILE</a>
                         <div class="grid grid-cols-2 gap-2">
-                            <a :href="game.links.pdf" target="_blank" @click.stop class="bg-red-500 text-white text-[10px] font-black py-3 rounded-xl text-center">PDF</a>
-                            <a :href="game.links.bgg" target="_blank" @click.stop class="bg-slate-800 text-white text-[10px] font-black py-3 rounded-xl text-center">BGG</a>
+                            <a :href="game.links.pdf" target="_blank" @click.stop class="bg-red-500 text-white text-[12px] font-black py-3 rounded-xl text-center">PDF</a>
+                            <a :href="game.links.bgg" target="_blank" @click.stop class="bg-slate-800 text-white text-[12px] font-black py-3 rounded-xl text-center">BGG</a>
                         </div>
                     </div>
                 </div>
