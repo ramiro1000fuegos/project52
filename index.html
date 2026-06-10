@@ -32,97 +32,92 @@
 <body class="bg-slate-50 p-4 font-sans text-slate-900 tracking-tight">
 
 <div id="app" v-cloak class="max-w-6xl mx-auto pb-20">
-    
-    <!-- 1. HEADER EDITORIAL -->
-    <header class="py-4 flex flex-col md:flex-row justify-between items-start gap-8 border-b border-slate-200 mb-4 md:mb-10">
-        <div class="max-w-2xl">
-            <h1 class="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter uppercase leading-none mb-4">
-                PROJET <span class="text-indigo-600">52 CARTES</span>
-            </h1>
-            <p class="text-lg font-bold text-slate-600 leading-tight">
-                {{ filteredGames.length }} jeux adaptés au matériel du quotidien.  <!-- {{ games.length }} -->
-            </p>
-        </div>
-    </header>
-
-    <!-- 2. RECHERCHE & FILTRES -->
-    <section class="section-card sticky top-0 rounded-t-none z-40 bg-white/95 backdrop-blur-sm">
-        <div class="grid grid-cols-2 md:grid-cols-12 gap-8 items-start" px-2 py-2>
-            
-            <!-- Joueurs -->
-            <div class="col-span-2 md:col-span-5">
-                <h3 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">Joueurs</h3>
-                    
-                <!-- Fila 1: 1-5 + Control -->
-                <div class="grid grid-cols-6 gap-2 mb-2 items-center text-center">
-                    <button v-for="n in 5" :key="n" @click="togglePlayer(n)" 
-                            :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
-                        {{n}}
-                    </button>
-                    <button @click="toggleRange6to10" class="flex items-center justify-center text-indigo-600 hover:text-indigo-900 transition-colors h-10 w-10 mx-auto">
-                        <i class="fa-solid" :class="showRange6to10 ? 'fa-circle-minus text-xl' : 'fa-circle-plus text-xl'"></i>
-                    </button>
-                </div>
-            
-                <!-- Fila 2: 6-10 + Control -->
-                <div v-if="showRange6to10" class="grid grid-cols-6 gap-2 mb-2 items-center text-center animate-fade-in">
-                    <button v-for="n in [6,7,8,9,10]" :key="n" @click="togglePlayer(n)" 
-                            :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
-                        {{n}}
-                    </button>
-                    <button @click="toggleRange11to20" class="flex items-center justify-center text-indigo-600 hover:text-indigo-900 transition-colors h-10 w-10 mx-auto">
-                        <i class="fa-solid" :class="showRange11to20 ? 'fa-circle-minus text-xl' : 'fa-circle-plus text-xl'"></i>
-                    </button>
-                </div>
-            
-                <!-- Rango 11 a 20 (Alineado con lo anterior) -->
-                <div v-if="showRange11to20" class="animate-fade-in">
-                    <!-- Fila 3: 11-15 + Espacio vacío -->
-                    <div class="grid grid-cols-6 gap-2 mb-2 items-center">
-                        <button v-for="n in [11,12,13,14,15]" :key="n" @click="togglePlayer(n)" 
-                                :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
-                            {{n}}
-                        </button>
-                        <div class="h-10 w-10"></div> <!-- Celda 6 vacía para mantener el ancho -->
-                    </div>
-            
-                    <!-- Fila 4: 16-20 + Espacio vacío -->
-                    <div class="grid grid-cols-6 gap-2 items-center">
-                        <button v-for="n in [16,17,18,19,20]" :key="n" @click="togglePlayer(n)" 
-                                :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
-                            {{n}}
-                        </button>
-                        <div class="h-10 w-10"></div> <!-- Celda 6 vacía para mantener el ancho -->
-                    </div>
-                </div>
+        
+        <!-- 1. HEADER EDITORIAL -->
+        <header class="py-4 flex flex-col md:flex-row justify-between items-start gap-8 border-b border-slate-200 mb-4 md:mb-10">
+            <div class="max-w-2xl">
+                <h1 class="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter uppercase leading-none mb-4">
+                    PROJET <span class="text-indigo-600">52 CARTES</span>
+                </h1>
+                <p class="text-lg font-bold text-slate-600 leading-tight">
+                    {{ filteredGames.length }} jeux adaptés au matériel du quotidien.  <!-- {{ games.length }} -->
+                </p>
             </div>
-            
-            <!-- Configuration Matériel -->
-            <div class="col-span-2 md:col-span-4 space-y-4">
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <h3 class="text-xs font-black uppercase text-slate-400 tracking-widest">Matériel</h3>
-                        <button @click="showLegend = !showLegend" class="flex items-center justify-center text-indigo-600 hover:text-indigo-900 transition-colors>
-                            <i class="fa-solid fa-circle-info"></i>
+        </header>
+    
+        <!-- 2. RECHERCHE & FILTRES -->
+        <section class="section-card sticky top-2 z-40 bg-white/95 backdrop-blur-sm shadow-xl mb-6 rounded-xl md:rounded-[2rem]">
+            <div class="grid grid-cols-2 md:grid-cols-12 gap-x-4 gap-y-3 items-start p-2 md:p-4">
+                
+                <!-- Joueurs -->
+                <div class="col-span-2 md:col-span-5">
+                    <h3 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">Joueurs</h3>
+                        
+                    <!-- Fila 1: 1-5 + Control -->
+                    <div class="grid grid-cols-6 gap-2 mb-2 items-center text-center">
+                        <button v-for="n in 5" :key="n" @click="togglePlayer(n)" 
+                                :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
+                            {{n}}
+                        </button>
+                        <button @click="toggleRange6to10" class="flex items-center justify-center text-indigo-600 hover:text-indigo-900 transition-colors h-10 w-10 mx-auto">
+                            <i class="fa-solid" :class="showRange6to10 ? 'fa-circle-minus text-xl' : 'fa-circle-plus text-xl'"></i>
                         </button>
                     </div>
-                    <select v-model="filters.material" class="w-full bg-slate-50 border-2 border-slate-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-indigo-500">
+                
+                    <!-- Fila 2: 6-10 + Control -->
+                    <div v-if="showRange6to10" class="grid grid-cols-6 gap-2 mb-2 items-center text-center animate-fade-in">
+                        <button v-for="n in [6,7,8,9,10]" :key="n" @click="togglePlayer(n)" 
+                                :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
+                            {{n}}
+                        </button>
+                        <button @click="toggleRange11to20" class="flex items-center justify-center text-indigo-600 hover:text-indigo-900 transition-colors h-10 w-10 mx-auto">
+                            <i class="fa-solid" :class="showRange11to20 ? 'fa-circle-minus text-xl' : 'fa-circle-plus text-xl'"></i>
+                        </button>
+                    </div>
+                
+                    <!-- Rango 11 a 20 (Alineado con lo anterior) -->
+                    <div v-if="showRange11to20" class="animate-fade-in">
+                        <!-- Fila 3: 11-15 + Espacio vacío -->
+                        <div class="grid grid-cols-6 gap-2 mb-2 items-center">
+                            <button v-for="n in [11,12,13,14,15]" :key="n" @click="togglePlayer(n)" 
+                                    :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
+                                {{n}}
+                            </button>
+                            <div class="h-10 w-10"></div> <!-- Celda 6 vacía para mantener el ancho -->
+                        </div>
+                
+                        <!-- Fila 4: 16-20 + Espacio vacío -->
+                        <div class="grid grid-cols-6 gap-2 items-center">
+                            <button v-for="n in [16,17,18,19,20]" :key="n" @click="togglePlayer(n)" 
+                                    :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
+                                {{n}}
+                            </button>
+                            <div class="h-10 w-10"></div> <!-- Celda 6 vacía para mantener el ancho -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Configuration Matériel -->
+                <!-- Matériel: Mitad de ancho en móvil (col-span-1) -->
+                <div class="col-span-1 md:col-span-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Matériel</h3>
+                    </div>
+                    <select v-model="filters.material" class="w-full bg-slate-50 border-2 border-slate-100 p-2 rounded-xl text-[11px] font-bold outline-none focus:border-indigo-500">
                         <option value="3-Maxi">Maxi</option>
                         <option value="2-Standard">Standard</option>
                         <option value="1-Mini">Mini</option>
                     </select>
-                </div>
-                
-                <div>
+                </div>       
+                <div class="col-span-1 md:col-span-3">                
                     <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-widest">Âge du plus jeune</h3>
                     <select v-model="filters.age" class="w-full bg-slate-50 border-2 border-slate-100 p-3 rounded-xl text-xs font-bold">
                         <option :value="99">Sans limite</option>
-                        <option v-for="a in [12,10,8,6]" :value="a">{{a}}-{{a+1}}ans</option>
+                        <option v-for="a in [12,10,8,6]" :value="a">{{a}}-{{a+1}} ans</option>
                     </select>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
     <!-- 4. RÉSULTATS JEUX -->
     <div v-if="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
