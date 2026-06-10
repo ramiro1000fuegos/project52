@@ -90,8 +90,8 @@
                             :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
                         {{n}}
                     </button>
-                    <button @click="toggleRange6to10" class="btn-player btn-player-inactive text-indigo-600 border-indigo-100">
-                        <i class="fa-solid" :class="showRange6to10 ? 'fa-minus' : 'fa-plus'"></i>
+                    <button @click="toggleRange6to10" class="flex items-center justify-center text-indigo-600 hover:text-indigo-900 transition-colors h-10 w-10">
+                        <i class="fa-solid" :class="showRange6to10 ? 'fa-circle-minus text-xl' : 'fa-circle-plus text-xl'"></i>
                     </button>
                 </div>
             
