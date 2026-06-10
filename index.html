@@ -23,9 +23,16 @@
         .btn-player-active { @apply bg-indigo-950 border-indigo-950 text-white shadow-inner; }
         .btn-player-inactive { @apply bg-white text-slate-500 border-slate-200 hover:border-indigo-300; }
         */
-        .attr-pill { @apply border border-slate-200 px-3 py-1 rounded-xl text-[10px] font-bold text-slate-500 bg-slate-50 flex items-center gap-1.5; }
-        .btn-cat { @apply border-2 border-slate-100 transition-all font-black text-[10px] uppercase py-2 px-3 rounded-xl flex items-center justify-center gap-2 bg-white text-slate-400; }
+
+        /* Botones de Categorías y RFK */
+        .btn-cat { border: 2px solid #f1f5f9; transition: all 0.2s; font-weight: 900; font-size: 10px; text-transform: uppercase; padding: 0.6rem 0.75rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; cursor: pointer; }
+        .btn-cat-active { background-color: #1e1b4b; border-color: #1e1b4b; color: white; }
+        .btn-cat-inactive { background-color: white; color: #94a3b8; border-color: #f1f5f9; }
+        /*.btn-cat { @apply border-2 border-slate-100 transition-all font-black text-[10px] uppercase py-2 px-3 rounded-xl flex items-center justify-center gap-2 bg-white text-slate-400; }
         .btn-cat-active { @apply bg-indigo-950 border-indigo-950 text-white; }
+        */
+        
+        .attr-pill { @apply border border-slate-200 px-3 py-1 rounded-xl text-[10px] font-bold text-slate-500 bg-slate-50 flex items-center gap-1.5; }
         .section-card { @apply bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-slate-200 mb-8; }
         .animate-fade-in { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
