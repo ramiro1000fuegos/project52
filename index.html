@@ -70,6 +70,7 @@
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
             
             <!-- Joueurs -->
+            <!--
             <div class="md:col-span-5">
                 <h3 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">Joueurs</h3>
                 <div class="grid grid-cols-5 gap-2">
@@ -78,8 +79,43 @@
                         {{n}}
                     </button>
                 </div>
+            </div> 
+            -->
+            <div class="md:col-span-5">
+                <h3 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">Joueurs</h3>
+                
+                <!-- Fila 1: Botones 1-5 + Control -->
+                <div class="grid grid-cols-6 gap-2 mb-2">
+                    <button v-for="n in 5" :key="n" @click="togglePlayer(n)" 
+                            :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
+                        {{n}}
+                    </button>
+                    <button @click="toggleRange6to10" class="btn-player btn-player-inactive text-indigo-600 border-indigo-100">
+                        <i class="fa-solid" :class="showRange6to10 ? 'fa-minus' : 'fa-plus'"></i>
+                    </button>
+                </div>
+            
+                <!-- Fila 2: Botones 6-10 + Control (Condicional) -->
+                <div v-if="showRange6to10" class="grid grid-cols-6 gap-2 mb-2 animate-fade-in">
+                    <button v-for="n in [6,7,8,9,10]" :key="n" @click="togglePlayer(n)" 
+                            :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
+                        {{n}}
+                    </button>
+                    <button @click="toggleRange11to20" class="btn-player btn-player-inactive text-indigo-600 border-indigo-100">
+                        <i class="fa-solid" :class="showRange11to20 ? 'fa-minus' : 'fa-plus'"></i>
+                    </button>
+                </div>
+            
+                <!-- Filas 3 y 4: Botones 11-20 (Condicional) -->
+                <!-- Usamos grid de 5 columnas aquí para que los 10 botones queden simétricos en 2 filas -->
+                <div v-if="showRange11to20" class="grid grid-cols-5 gap-2 animate-fade-in">
+                    <button v-for="n in [11,12,13,14,15,16,17,18,19,20]" :key="n" @click="togglePlayer(n)" 
+                            :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
+                        {{n}}
+                    </button>
+                </div>
             </div>
-
+            
             <!-- Configuration Matériel -->
             <div class="md:col-span-4 space-y-4">
                 <div>
@@ -250,6 +286,8 @@ createApp({
             expandedId: null,
             showExtra: false,
             showLegend: false,
+            showRange6to10: false,  
+            showRange11to20: false,             
             selectedPlayers: [],
             sortBy: 'ideal',
             games: [],
@@ -285,6 +323,19 @@ createApp({
         }
     },
     methods: {
+        toggleRange6to10() {
+            this.showRange6to10 = !this.showRange6to10;
+            if (!this.showRange6to10) {
+                this.showRange11to20 = false; // Cerramos el siguiente rango también
+                this.selectedPlayers = this.selectedPlayers.filter(n => n <= 5);
+            }
+        },
+        toggleRange11to20() {
+            this.showRange11to20 = !this.showRange11to20;
+            if (!this.showRange11to20) {
+                this.selectedPlayers = this.selectedPlayers.filter(n => n <= 10);
+            }
+        },        
         async fetchData() {
             const URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQiSGJxvRlizw98U7hsFPScVZv7YKL9a-lL1AuXMfGhUz1oCl6Eb7SVSsTOdRIDHQy4ORsseMTkf6YH/pub?gid=0&single=true&output=csv";
             try {
