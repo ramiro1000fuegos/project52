@@ -195,17 +195,37 @@ createApp({
                 const matchAge = game.ageMin <= this.filters.age;
                 const configRank = { 'Mini': 1, 'Standard': 2, 'Maxi': 3 };
                 const matchMaterial = configRank[game.config] <= configRank[this.filters.material.split('-')[1] || this.filters.material];
-                const timeRank = { '1-Express': 1, '2-Courant': 2, '3-Long': 3 };
-                const matchTime = timeRank[game.timeStart] <= timeRank[this.filters.time];
-                const matchCats = this.filters.cats.length === 0 || this.filters.cats.some(c => game.catBGG[c]);
-                const matchNew = this.filters.onlyNew ? game.isNew : true;
-                const matchHeart = this.filters.onlyHeart ? game.heart : true;
-                return matchPlayer && matchAge && matchMaterial && matchTime && matchCats && matchNew && matchHeart;
+                //const timeRank = { '1-Express': 1, '2-Courant': 2, '3-Long': 3 };
+                //const matchTime = timeRank[game.timeStart] <= timeRank[this.filters.time];
+                //const matchCats = this.filters.cats.length === 0 || this.filters.cats.some(c => game.catBGG[c]);
+                //const matchNew = this.filters.onlyNew ? game.isNew : true;
+                //const matchHeart = this.filters.onlyHeart ? game.heart : true;
+                return matchPlayer && matchAge && matchMaterial //&& matchTime && matchCats && matchNew && matchHeart;
             }).sort((a, b) => {
-                if (this.sortBy === 'ideal') return this.calculateScore(b) - this.calculateScore(a);
-                if (this.sortBy === 'ranking') return (parseInt(a.rankingBGG) || 99999) - (parseInt(b.rankingBGG) || 99999);
-                if (this.sortBy === 'newest') return new Date(b.dateAdded) - new Date(a.dateAdded);
-                return 0;
+               // A. Contamos solo los verdes (🟢) para la selección actual
+                const getGreenCount = (game) => {
+                    if (this.selectedPlayers.length === 0) return 0;
+                    return this.selectedPlayers.reduce((acc, p) => 
+                        acc + (game.players[p] && game.players[p].includes('🟢') ? 1 : 0), 0);
+                };
+        
+                const greensA = getGreenCount(a);
+                const greensB = getGreenCount(b);
+        
+                // B. Criterio Primario: Más verdes arriba
+                if (greensB !== greensA) {
+                    return greensB - greensA;
+                }
+        
+                // C. Criterio Secundario: Ranking BGG Ponderado
+                const getWeightedRank = (game) => {
+                    let rank = parseInt(game.rankingBGG) || 30000;
+                    if (game.heart) rank /= 2;   // Favorito RFK
+                    if (game.isNew) rank /= 2;   // Novedad
+                    return rank;
+                };
+        
+                return getWeightedRank(a) - getWeightedRank(b);
             });
         }
     },
