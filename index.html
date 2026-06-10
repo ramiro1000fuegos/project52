@@ -84,35 +84,50 @@
             <div class="md:col-span-5">
                 <h3 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">Joueurs</h3>
                 
-                <!-- Fila 1: Botones 1-5 + Control -->
-                <div class="grid grid-cols-6 gap-2 mb-2">
+<div class="md:col-span-5">
+    <h3 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">Joueurs</h3>
+    
+                <!-- Fila 1: 1-5 + Control -->
+                <div class="grid grid-cols-6 gap-2 mb-2 items-center text-center">
                     <button v-for="n in 5" :key="n" @click="togglePlayer(n)" 
                             :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
                         {{n}}
                     </button>
-                    <button @click="toggleRange6to10" class="flex items-center justify-center text-indigo-600 hover:text-indigo-900 transition-colors h-10 w-10">
+                    <button @click="toggleRange6to10" class="flex items-center justify-center text-indigo-600 hover:text-indigo-900 transition-colors h-10 w-10 mx-auto">
                         <i class="fa-solid" :class="showRange6to10 ? 'fa-circle-minus text-xl' : 'fa-circle-plus text-xl'"></i>
                     </button>
                 </div>
             
-                <!-- Fila 2: Botones 6-10 + Control (Condicional) -->
-                <div v-if="showRange6to10" class="grid grid-cols-6 gap-2 mb-2 animate-fade-in">
+                <!-- Fila 2: 6-10 + Control -->
+                <div v-if="showRange6to10" class="grid grid-cols-6 gap-2 mb-2 items-center text-center animate-fade-in">
                     <button v-for="n in [6,7,8,9,10]" :key="n" @click="togglePlayer(n)" 
                             :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
                         {{n}}
                     </button>
-                    <button @click="toggleRange11to20" class="btn-player btn-player-inactive text-indigo-600 border-indigo-100">
-                        <i class="fa-solid" :class="showRange11to20 ? 'fa-minus' : 'fa-plus'"></i>
+                    <button @click="toggleRange11to20" class="flex items-center justify-center text-indigo-600 hover:text-indigo-900 transition-colors h-10 w-10 mx-auto">
+                        <i class="fa-solid" :class="showRange11to20 ? 'fa-circle-minus text-xl' : 'fa-circle-plus text-xl'"></i>
                     </button>
                 </div>
             
-                <!-- Filas 3 y 4: Botones 11-20 (Condicional) -->
-                <!-- Usamos grid de 5 columnas aquí para que los 10 botones queden simétricos en 2 filas -->
-                <div v-if="showRange11to20" class="grid grid-cols-5 gap-2 animate-fade-in">
-                    <button v-for="n in [11,12,13,14,15,16,17,18,19,20]" :key="n" @click="togglePlayer(n)" 
-                            :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
-                        {{n}}
-                    </button>
+                <!-- Rango 11 a 20 (Alineado con lo anterior) -->
+                <div v-if="showRange11to20" class="animate-fade-in">
+                    <!-- Fila 3: 11-15 + Espacio vacío -->
+                    <div class="grid grid-cols-6 gap-2 mb-2 items-center">
+                        <button v-for="n in [11,12,13,14,15]" :key="n" @click="togglePlayer(n)" 
+                                :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
+                            {{n}}
+                        </button>
+                        <div class="h-10 w-10"></div> <!-- Celda 6 vacía para mantener el ancho -->
+                    </div>
+            
+                    <!-- Fila 4: 16-20 + Espacio vacío -->
+                    <div class="grid grid-cols-6 gap-2 items-center">
+                        <button v-for="n in [16,17,18,19,20]" :key="n" @click="togglePlayer(n)" 
+                                :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
+                            {{n}}
+                        </button>
+                        <div class="h-10 w-10"></div> <!-- Celda 6 vacía para mantener el ancho -->
+                    </div>
                 </div>
             </div>
             
