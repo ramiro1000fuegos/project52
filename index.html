@@ -105,9 +105,9 @@
                         <h3 class="text-xs font-black uppercase text-slate-400 tracking-widest">Matériel</h3>
                     </div>
                     <select v-model="filters.material" class="w-full bg-slate-50 border-2 border-slate-100 p-2 rounded-xl text-xs font-bold outline-none focus:border-indigo-500">
-                        <option value="3-Maxi">Maxi</option>
-                        <option value="2-Standard">Standard</option>
-                        <option value="1-Mini">Mini</option>
+                        <option value="3">Maxi</option>
+                        <option value="2">Standard</option>
+                        <option value="1">Mini</option>
                     </select>
                 </div>       
                 <div class="col-span-1 md:col-span-3">                
@@ -185,7 +185,7 @@ createApp({
                 { name: "Abstrait", label: "Abstrait", icon: "fa-solid fa-chess-board" },
                 { name: "Stratégie", label: "Stratégie", icon: "fa-solid fa-gears" }
             ],
-            filters: { age: 99, material: '3-Maxi', time: '3-Long', cats: [], onlyNew: false, onlyHeart: false }
+            filters: { age: 99, material: 3, time: '3-Long', cats: [], onlyNew: false, onlyHeart: false }
         }
     },
     mounted() { this.fetchData(); },
@@ -195,7 +195,7 @@ createApp({
                 const matchPlayer = this.selectedPlayers.length === 0 || this.selectedPlayers.every(p => game.players[p] && !game.players[p].includes('🔴'));
                 const matchAge = game.ageMin <= this.filters.age;
                 const configRank = { 'Mini': 1, 'Standard': 2, 'Maxi': 3 };
-                const matchMaterial = configRank[game.config] <= configRank[this.filters.material.split('-')[1] || this.filters.material];
+                const matchMaterial = game.configLevel <= this.filters.material;
                 //const timeRank = { '1-Express': 1, '2-Courant': 2, '3-Long': 3 };
                 //const matchTime = timeRank[game.timeStart] <= timeRank[this.filters.time];
                 //const matchCats = this.filters.cats.length === 0 || this.filters.cats.some(c => game.catBGG[c]);
@@ -254,10 +254,11 @@ createApp({
                     complete: (results) => {
                         this.games = results.data.filter(row => row.Nom_Adaptation).map((row, index) => {
                             return {
-                                id: index, name: row.Nom_Adaptation, description: row.Description, origin: row.Jeu_Origine, ageMin: parseInt(row.Age_Min) || 0,
+                                id: index, name: row.Nom_Adaptation, description: row.Description, origin: row.Jeu_Origine, ageMin: parseInt(row.Age_Min) || 0, 
+                                configLevel: row.Config_materiel ? (parseInt(row.Config_materiel.charAt(0)) || 3) : 3,
                                 config: row.Config_materiel ? (row.Config_materiel.includes('-') ? row.Config_materiel.split('-')[1] : row.Config_materiel) : 'Maxi',
                                 nbPersonnes: row.Nb_personnes, timeStart: row.Temps_avant_demarrage || '3-Long', rankingBGG: row.Ranking_BGG || 'N/A',
-                                isNew: row.New !== "", heart: row.Favori !== "", dateAdded: row.Date_Publication || "2000-01-01", fidelityScore: this.parseFidelity(row.Fidelite),
+                                isNew: row.New !== "", heart: row.Favori !== "", dateAdded: row.Date_Publication || "1900-01-01", fidelityScore: this.parseFidelity(row.Fidelite),
                                 fidelityDetails: row.Details_Fidelite, catBGG: { Famille: row.Famille !== "", Party: row.Party !== "", Abstrait: row.Abstrait !== "", Stratégie: row.Stratégie !== "" },
                                 players: this.extractPlayers(row), links: { mobile: row.Lien_Regles_Mobiles, pdf: row.Lien_PDF, bgg: row.Lien_BGG }
                             }
