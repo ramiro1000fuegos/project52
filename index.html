@@ -153,9 +153,11 @@
 
     <!-- 4. RÉSULTATS JEUX -->
     <div v-if="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+       
         <div v-for="game in filteredGames" :key="game.id" 
-             @click="expandedId = (expandedId === game.id ? null : game.id)"
-             class="bg-white rounded-[2rem] border-2 border-slate-200 overflow-hidden cursor-pointer hover:border-indigo-400 transition-all shadow-sm"
+             :id="'game-' + game.id" 
+             @click="toggleExpand(game.id)"
+             class="bg-white rounded-[2rem] border-2 border-slate-200 overflow-hidden cursor-pointer hover:border-indigo-400 transition-all shadow-sm scroll-mt-40"
              :class="{'ring-4 ring-indigo-500/20 border-indigo-500 shadow-xl': expandedId === game.id}">
             
             <div class="p-6">
@@ -193,7 +195,7 @@
                 </div>                
 
                 <p class="text-slate-600 text-s leading-relaxed" :class="expandedId === game.id ? '' : 'line-clamp-1'">{{ game.description }}</p>
-
+              
                 <div v-if="expandedId === game.id" class="mt-3 pt-3 space-y-4 animate-fade-in">
                     <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-s">
                         <h4 class="font-black uppercase text-slate-600 mb-1 tracking-widest">Fidélité : {{ game.fidelityScore }}/4</h4>
@@ -291,6 +293,18 @@ createApp({
             this.showRange11to20 = !this.showRange11to20;
             if (!this.showRange11to20) {
                 this.selectedPlayers = this.selectedPlayers.filter(n => n <= 10);
+            }
+        },        
+        toggleExpand(id) {
+            if (this.expandedId === id) {
+                this.expandedId = null;
+            } else {
+                this.expandedId = id;
+                // Este bloque hace que la pantalla se desplace a la ficha
+                setTimeout(() => {
+                    const el = document.getElementById('game-' + id);
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
             }
         },        
         async fetchData() {
