@@ -23,16 +23,21 @@
         .btn-cat-active { background-color: #1e1b4b; border-color: #1e1b4b; color: white; }
         .btn-cat-inactive { background-color: white; color: #94a3b8; border-color: #f1f5f9; }
 
-        .new-pill { @apply border border-amber-200 px-2 py-0.5 rounded-full text-[9px] font-black uppercase text-amber-600 bg-amber-50 flex items-center gap-1;
-                /* Opcional: un pulso muy suave para juegos nuevos */   animation: soft-pulse 2s infinite; }
-
-        @keyframes soft-pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.03); }
-            100% { transform: scale(1); }
+        .attr-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid #e2e8f0; /* Borde gris suave */
+            padding: 4px 12px;
+            border-radius: 50px; /* Forma de cápsula */
+            font-size: 10px;
+            font-weight: 700;
+            color: #64748b;
+            background-color: #f8fafc;
+            margin-bottom: 4px;
         }
         
-        .attr-pill { @apply border border-slate-200 px-3 py-1 rounded-xl text-xs font-bold text-slate-500 bg-slate-50 flex items-center gap-1.5; }
+        /*.attr-pill { @apply border border-slate-200 px-3 py-1 rounded-xl text-xs font-bold text-slate-500 bg-slate-50 flex items-center gap-1.5; }*/
         .cat-pill { @apply border border-indigo-100 px-2 py-0.5 rounded-full text-[9px] font-black uppercase text-indigo-400 bg-indigo-50/50 flex items-center gap-1; }
         .section-card { @apply bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-slate-200 mb-8; }
         .animate-fade-in { animation: fadeIn 0.3s ease-out; }
