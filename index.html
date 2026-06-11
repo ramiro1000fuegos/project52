@@ -58,6 +58,29 @@
             from { opacity: 0; transform: translateY(10px); } 
             to { opacity: 1; transform: translateY(0); } 
         }
+        
+        /* 1. Botón Principal (Reglas Móvil) - Indigo Profundo: Denota autoridad y acción principal */
+        .btn-mobile {
+            background-color: #1e1b4b; /* Indigo 950 */
+            color: white;
+        }
+        .btn-mobile:hover { background-color: #312e81; }
+        
+        /* 2. Botón Secundario (PDF) - Verde Bosque/Ceniza: Diferente al azul pero calmado, invita a la utilidad */
+        .btn-pdf {
+            background-color: #134e4a; /* Teal 900 */
+            color: white;
+        }
+        .btn-pdf:hover { background-color: #0f766e; }
+        
+        /* 3. Botón Terciario (BGG) - Gris Neutro: Parece un botón de "fuente" o "archivo", no compite con los otros */
+        .btn-bgg {
+            background-color: #f1f5f9; /* Slate 100 */
+            border: 1px solid #e2e8f0; /* Slate 200 */
+            color: #475569; /* Slate 600 */
+        }
+        .btn-bgg:hover { background-color: #e2e8f0; color: #1e293b; }
+        
     </style>
 </head>
 <body class="bg-slate-50 p-4 font-sans text-slate-900 tracking-tight">
@@ -157,7 +180,7 @@
         <div v-for="game in filteredGames" :key="game.id" 
              :id="'game-' + game.id" 
              @click="toggleExpand(game.id)"
-             class="bg-white rounded-[2rem] border-2 border-slate-200 overflow-hidden cursor-pointer hover:border-indigo-400 transition-all shadow-sm scroll-mt-40"
+             class="bg-white rounded-[2rem] border-2 border-slate-200 overflow-hidden cursor-pointer hover:border-indigo-400 transition-all shadow-sm"
              :class="{'ring-4 ring-indigo-500/20 border-indigo-500 shadow-xl': expandedId === game.id}">
             
             <div class="p-6">
@@ -202,23 +225,24 @@
                         <p class="text-slate-600 italic">{{ game.fidelityDetails }}</p>
                     </div>
 
-                    <div class="flex flex-col gap-2">
-                        <!-- Botón Principal: Reglas Móvil (Azul profundo) -->
+                    <div class="flex flex-col gap-2 mt-4">
+                        <!-- BOTÓN 1: EL MÁS IMPORTANTE -->
                         <a :href="game.links.mobile" target="_blank" @click.stop 
-                           class="bg-indigo-950 text-white text-[12px] font-bold py-3 rounded-xl text-center hover:bg-slate-800 transition-colors">
-                            RÈGLES MOBILE
+                           class="btn-mobile text-[12px] font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-mobile-screen-button opacity-70"></i> RÈGLES MOBILE
                         </a>
                     
-                        <!-- Botones Secundarios: PDF y BGG (Gris suave) -->
                         <div class="grid gap-2" :class="game.links.bgg ? 'grid-cols-2' : 'grid-cols-1'">
+                            <!-- BOTÓN 2: UTILIDAD (PDF) -->
                             <a v-if="game.links.pdf" :href="game.links.pdf" target="_blank" @click.stop 
-                               class="bg-slate-50 border border-slate-200 text-slate-600 text-[12px] font-bold py-3 rounded-xl text-center hover:bg-slate-100 transition-colors">
-                                PDF
+                               class="btn-pdf text-[12px] font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2 shadow-sm">
+                                <i class="fa-solid fa-file-pdf opacity-70"></i> PDF
                             </a>
-                            <!-- Solo aparece si hay link BGG -->
+                    
+                            <!-- BOTÓN 3: EL MENOS IMPORTANTE (Solo si existe link) -->
                             <a v-if="game.links.bgg" :href="game.links.bgg" target="_blank" @click.stop 
-                               class="bg-slate-50 border border-slate-200 text-slate-600 text-[12px] font-bold py-3 rounded-xl text-center hover:bg-slate-100 transition-colors">
-                                BGG
+                               class="btn-bgg text-[12px] font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2">
+                                <i class="fa-brands fa-fort-awesome opacity-50"></i> BGG
                             </a>
                         </div>
                     </div>
