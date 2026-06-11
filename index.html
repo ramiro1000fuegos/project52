@@ -143,9 +143,10 @@
             <div class="p-6">
                 <div class="flex justify-between items-start mb-4">
                     <div class="flex-1">
-                        <h2 class="text-lg font-black text-slate-900 leading-tight uppercase">{{ game.name }}</h2> 
+                        <h2 class="text-lg font-black text-slate-900 leading-tight uppercase">{{ game.name }} 
                         <span v-if="game.heart">❤️</span> 
-                        <span v-if="game.isNew" class="new-pill"><i class="fa-solid fa-star"></i> Neuf </span>
+                        <span v-if="game.isNew">✨</span> 
+                        </h2>
                         <p class="text-s text-slate-300 font-bold mt-1 uppercase">{{ game.origin }}</p>
                     </div>
                     <div class="text-s font-black text-slate-300">#{{ game.rankingBGG }}</div>
