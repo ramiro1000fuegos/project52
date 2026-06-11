@@ -131,14 +131,14 @@
                 <div class="flex justify-between items-start mb-4">
                     <div class="flex-1">
                         <h2 class="text-lg font-black text-slate-900 leading-tight uppercase">{{ game.name }} <span v-if="game.heart">❤️</span></h2>
-                        <p class="text-[12px] text-slate-400 font-bold mt-1 uppercase">{{ game.origin }}</p>
+                        <p class="text-s text-slate-400 font-bold mt-1 uppercase">{{ game.origin }}</p>
                     </div>
-                    <div class="text-[12px] font-black text-slate-300">#{{ game.rankingBGG }}</div>
+                    <div class="text-s font-black text-slate-400">#{{ game.rankingBGG }}</div>
                 </div>
 
                 <div class="flex flex-wrap gap-2 mb-4">
                     <div class="attr-pill"><i class="fa-solid fa-users text-indigo-300"></i> {{ game.nbPersonnes }}</div>
-                    <div class="attr-pill"><i class="fa-solid fa-bolt text-indigo-300"></i> {{ game.timeStart }}</div>
+                    <!--<div class="attr-pill"><i class="fa-solid fa-bolt text-indigo-300"></i> {{ game.timeStart }}</div>-->
                     <div class="attr-pill"><i class="fa-solid fa-cake-candles text-indigo-300"></i> {{ game.ageMin }}+</div>
                     <div class="attr-pill"><i class="fa-solid fa-box text-indigo-300"></i> {{ game.config }}</div>
                 </div>
@@ -148,7 +148,7 @@
                 <div v-if="expandedId === game.id" class="mt-6 pt-6 border-t border-slate-100 space-y-4 animate-fade-in">
                     <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-s">
                         <h4 class="font-black uppercase text-slate-400 mb-1 tracking-widest">Fidélité : {{ game.fidelityScore }}/4</h4>
-                        <p class="text-slate-500 italic">{{ game.fidelityDetails }}</p>
+                        <p class="text-slate-600 italic">{{ game.fidelityDetails }}</p>
                     </div>
                     <div class="flex flex-col gap-2">
                         <a :href="game.links.mobile" target="_blank" @click.stop class="bg-indigo-600 text-white text-[12px] font-black py-3 rounded-xl text-center">RÈGLES MOBILE</a>
