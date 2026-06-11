@@ -131,9 +131,9 @@
                 <div class="flex justify-between items-start mb-4">
                     <div class="flex-1">
                         <h2 class="text-lg font-black text-slate-900 leading-tight uppercase">{{ game.name }} <span v-if="game.heart">❤️</span></h2>
-                        <p class="text-s text-slate-400 font-bold mt-1 uppercase">{{ game.origin }}</p>
+                        <p class="text-s text-slate-300 font-bold mt-1 uppercase">{{ game.origin }}</p>
                     </div>
-                    <div class="text-s font-black text-slate-400">#{{ game.rankingBGG }}</div>
+                    <div class="text-s font-black text-slate-300">#{{ game.rankingBGG }}</div>
                 </div>
 
                 <div class="flex flex-wrap gap-2 mb-4">
@@ -147,7 +147,7 @@
 
                 <div v-if="expandedId === game.id" class="mt-6 pt-6 border-t border-slate-100 space-y-4 animate-fade-in">
                     <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-s">
-                        <h4 class="font-black uppercase text-slate-400 mb-1 tracking-widest">Fidélité : {{ game.fidelityScore }}/4</h4>
+                        <h4 class="font-black uppercase text-slate-600 mb-1 tracking-widest">Fidélité : {{ game.fidelityScore }}/4</h4>
                         <p class="text-slate-600 italic">{{ game.fidelityDetails }}</p>
                     </div>
                     <div class="flex flex-col gap-2">
@@ -268,7 +268,7 @@ createApp({
             } catch(e) { alert("Erreur de synchronisation."); this.loading = false; }
         },
         extractPlayers(row) { let p = {}; for (let i = 1; i <= 21; i++) { if (row[i.toString()]) p[i] = row[i.toString()]; } return p; },
-        parseFidelity(text) { if (!text) return 0; if (text.includes("Très bonne")) return 4; if (text.includes("Bonne")) return 3; if (text.includes("Moyenne")) return 2; return 1; },
+        parseFidelity(text) { if (!text) return 0; if (text.includes("4")) return 4; if (text.includes("3")) return 3; if (text.includes("2")) return 2; return 1; },
         togglePlayer(n) { const i = this.selectedPlayers.indexOf(n); if (i > -1) this.selectedPlayers.splice(i, 1); else this.selectedPlayers.push(n); },
         toggleCat(name) { const i = this.filters.cats.indexOf(name); if (i > -1) this.filters.cats.splice(i, 1); else this.filters.cats.push(name); },
         calculateScore(game) {
