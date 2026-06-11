@@ -125,7 +125,7 @@
             <div class="grid grid-cols-2 md:grid-cols-12 gap-2 items-start p-2 md:p-4">
                 
                 <!-- Joueurs -->
-                <div class="col-span-1 md:col-span-5">
+                <div class="col-span-2 md:col-span-5">
                     <h3 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">Joueurs</h3>
                         
                     <!-- Fila 1: 1-5 + Control -->
@@ -174,7 +174,7 @@
                 
                 <!-- Autres Filtres: Mitad de ancho en móvil (col-span-1) --> 
                 <!-- Fila de filtros Material (2/5), Edad (2/5) y Flash (1/5) -->
-                <div class="col-span-1 md:col-span-4 grid grid-cols-5 gap-3">
+                <div class="col-span-2 md:col-span-7 grid grid-cols-5 gap-3">
                     <!-- Material (2 de 5) -->
                     <div class="col-span-2">
                         <div class="flex justify-between items-center mb-2">
@@ -369,7 +369,7 @@ createApp({
                     // 2. Ajuste por Nota RKF (Lineal entre -15,000 y +15,000)
                     // Nota 10 -> -15,000 | Nota 5 -> 0 | Nota 0 -> +15,000
                     // Fórmula: (5 - nota) * 3000
-                    const noteAjuste = (5 - game.scoreRKF) * 3000;
+                    const noteAjuste = (5 - game.scoreRKF) * 2000;
                     virtualRank += noteAjuste;
                 
                     // 3. Ajuste por Novedad (Solo si tiene menos de 90 días)
