@@ -77,7 +77,7 @@
         </header>
     
         <!-- 2. RECHERCHE & FILTRES -->
-        <section class="section-card sticky top-0 rounded-t-none z-40 bg-white/95 backdrop-blur-sm shadow-xl mb-6 rounded-xl">
+        <section id="filter-section" class="section-card sticky top-0 rounded-t-none z-40 bg-white/95 backdrop-blur-sm shadow-xl mb-6 rounded-xl">
             <!--<div class="grid grid-cols-2 md:grid-cols-12 gap-x-4 gap-y-3 items-start p-2 md:p-4">-->
             <div class="grid grid-cols-2 md:grid-cols-12 gap-2 items-start p-2 md:p-4">
                 
@@ -316,10 +316,32 @@ createApp({
             } else {
                 this.expandedId = id;
                 // Este bloque hace que la pantalla se desplace a la ficha
+                //setTimeout(() => {
+                //    const el = document.getElementById('game-' + id);
+                //    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                //}, 100);
                 setTimeout(() => {
-                    const el = document.getElementById('game-' + id);
-                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    const card = document.getElementById('game-' + id);
+                    const header = document.getElementById('filter-section');
+                    
+                    if (card && header) {
+                        // 1. Medimos cuánto mide la barra de filtros ahora mismo
+                        const headerHeight = header.offsetHeight;
+                        
+                        // 2. Calculamos la posición de la ficha respecto al total de la página
+                        // Añadimos 16px extra de "aire" (gap) para que no esté pegada
+                        const topOffset = card.getBoundingClientRect().top + window.pageYOffset - headerHeight - 16;
+        
+                        // 3. Movemos la pantalla a esa posición exacta
+                        window.scrollTo({
+                            top: topOffset,
+                            behavior: 'smooth'
+                        });
+                    }
                 }, 100);
+
+
+                
             }
         },        
         async fetchData() {
