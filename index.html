@@ -125,7 +125,7 @@
             <div class="grid grid-cols-2 md:grid-cols-12 gap-2 items-start p-2 md:p-4">
                 
                 <!-- Joueurs -->
-                <div class="col-span-2 md:col-span-5">
+                <div class="col-span-1 md:col-span-5">
                     <h3 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">Joueurs</h3>
                         
                     <!-- Fila 1: 1-5 + Control -->
@@ -327,7 +327,7 @@ createApp({
                 { name: "Abstrait", label: "Abstrait", icon: "fa-solid fa-chess-board" },
                 { name: "Stratégie", label: "Stratégie", icon: "fa-solid fa-gears" }
             ],
-            filters: { age: 99, material: 3, time: '3-Long', cats: [], onlyNew: false, onlyHeart: false }
+            filters: { age: 99, material: 3, time: '3-Long', cats: [], onlyNew: false, onlyHeart: false, onlyFlash: false  }
         }
     },
     mounted() { this.fetchData(); },
@@ -453,6 +453,7 @@ createApp({
                                 config: row.Config_materiel ? (row.Config_materiel.includes('-') ? row.Config_materiel.split('-')[1] : row.Config_materiel) : 'Maxi',
                                 nbPersonnes: row.Nb_personnes, timeStart: row.Temps_avant_demarrage || '3-Long', rankingBGG: row.Ranking_BGG || 'N/A',
                                 scoreRKF: parseFloat(row.Note_RKF) || 5,
+                                isFlash: row.Flash52 !== "",
                                 isNew: row.New !== "", heart: row.Favori !== "", 
                                 dateAdded: row.Date_Publication ? new Date(row.Date_Publication) : new Date("1900-01-01"),
                                 fidelityScore: this.parseFidelity(row.Fidelite),
