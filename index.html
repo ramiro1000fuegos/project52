@@ -22,12 +22,24 @@
         .btn-cat { border: 2px solid #f1f5f9; transition: all 0.2s; font-weight: 900; font-size: 10px; text-transform: uppercase; padding: 0.6rem 0.75rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; cursor: pointer; }
         .btn-cat-active { background-color: #1e1b4b; border-color: #1e1b4b; color: white; }
         .btn-cat-inactive { background-color: white; color: #94a3b8; border-color: #f1f5f9; }
-       
+
+        .new-pill { @apply border border-amber-200 px-2 py-0.5 rounded-full text-[9px] font-black uppercase text-amber-600 bg-amber-50 flex items-center gap-1;
+                /* Opcional: un pulso muy suave para juegos nuevos */   animation: soft-pulse 2s infinite; }
+
+        @keyframes soft-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+        
         .attr-pill { @apply border border-slate-200 px-3 py-1 rounded-xl text-xs font-bold text-slate-500 bg-slate-50 flex items-center gap-1.5; }
         .cat-pill { @apply border border-indigo-100 px-2 py-0.5 rounded-full text-[9px] font-black uppercase text-indigo-400 bg-indigo-50/50 flex items-center gap-1; }
         .section-card { @apply bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-slate-200 mb-8; }
         .animate-fade-in { animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
     </style>
 </head>
 <body class="bg-slate-50 p-4 font-sans text-slate-900 tracking-tight">
@@ -131,7 +143,9 @@
             <div class="p-6">
                 <div class="flex justify-between items-start mb-4">
                     <div class="flex-1">
-                        <h2 class="text-lg font-black text-slate-900 leading-tight uppercase">{{ game.name }} <span v-if="game.heart">❤️</span></h2> <span v-if="game.heart" class="text-red-500 text-xs">❤️</span>
+                        <h2 class="text-lg font-black text-slate-900 leading-tight uppercase">{{ game.name }}</h2> 
+                        <span v-if="game.heart">❤️</span> 
+                        <span v-if="game.isNew" class="new-pill"><i class="fa-solid fa-star"></i> Neuf </span>
                         <p class="text-s text-slate-300 font-bold mt-1 uppercase">{{ game.origin }}</p>
                     </div>
                     <div class="text-s font-black text-slate-300">#{{ game.rankingBGG }}</div>
