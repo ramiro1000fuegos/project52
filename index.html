@@ -348,10 +348,27 @@ createApp({
         
                 // C. Criterio Secundario: Ranking BGG Ponderado
                 const getWeightedRank = (game) => {
-                    let rank = parseInt(game.rankingBGG) || 30000;
-                    if (game.heart) rank /= 2;   // Favorito RFK
-                    if (game.isNew) rank /= 2;   // Novedad
-                    return rank;
+                    // 1. Base del ranking (1 a 30,000)
+                    let virtualRank = parseInt(game.rankingBGG) || 30000;
+                
+                    // 2. Ajuste por Nota RKF (Lineal entre -15,000 y +15,000)
+                    // Nota 10 -> -15,000 | Nota 5 -> 0 | Nota 0 -> +15,000
+                    // Fórmula: (5 - nota) * 3000
+                    const noteAjuste = (5 - game.scoreRKF) * 3000;
+                    virtualRank += noteAjuste;
+                
+                    // 3. Ajuste por Novedad (Solo si tiene menos de 90 días)
+                    const today = new Date();
+                    const diffMs = today - game.dateAdded;
+                    const diffDays = diffMs / (1000 * 60 * 60 * 24);
+                
+                    if (diffDays >= 0 && diffDays <= 90) {
+                        // Bono de -10,000 (hoy) bajando hasta 0 (a los 90 días)
+                        const noveltyBono = (1 - (diffDays / 90)) * 10000;
+                        virtualRank -= noveltyBono;
+                    }                
+                    return virtualRank;
+                    
                 };
         
                 return getWeightedRank(a) - getWeightedRank(b);
@@ -420,7 +437,10 @@ createApp({
                                 configLevel: row.Config_materiel ? (parseInt(row.Config_materiel.charAt(0)) || 3) : 3,
                                 config: row.Config_materiel ? (row.Config_materiel.includes('-') ? row.Config_materiel.split('-')[1] : row.Config_materiel) : 'Maxi',
                                 nbPersonnes: row.Nb_personnes, timeStart: row.Temps_avant_demarrage || '3-Long', rankingBGG: row.Ranking_BGG || 'N/A',
-                                isNew: row.New !== "", heart: row.Favori !== "", dateAdded: row.Date_Publication || "1900-01-01", fidelityScore: this.parseFidelity(row.Fidelite),
+                                scoreRKF: parseFloat(row.Note_RKF) || 5,
+                                isNew: row.New !== "", heart: row.Favori !== "", 
+                                dateAdded: row.Date_Publication ? new Date(row.Date_Publication) : new Date("1900-01-01"),
+                                fidelityScore: this.parseFidelity(row.Fidelite),
                                 fidelityDetails: row.Details_Fidelite, catBGG: { Famille: row.Famille !== "", Party: row.Party !== "", Abstrait: row.Abstrait !== "", Stratégie: row.Stratégie !== "" },
                                 players: this.extractPlayers(row), links: { mobile: row.Lien_Regles_Mobiles, pdf: row.Lien_PDF, bgg: row.Lien_BGG }
                             }
