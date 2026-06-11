@@ -172,24 +172,37 @@
                     </div>
                 </div>
                 
-                <!-- Configuration Matériel -->
-                <!-- Matériel: Mitad de ancho en móvil (col-span-1) -->
-                <div class="col-span-1 md:col-span-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <h3 class="text-xs font-black uppercase text-slate-400 tracking-widest">Matériel</h3>
+                <!-- Autres Filtres: Mitad de ancho en móvil (col-span-1) --> 
+                <!-- Fila de filtros Material (2/5), Edad (2/5) y Flash (1/5) -->
+                <div class="col-span-1 md:col-span-4 grid grid-cols-5 gap-3">
+                    <!-- Material (2 de 5) -->
+                    <div class="col-span-2">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xs font-black uppercase text-slate-400 tracking-widest">Matériel</h3>
+                        </div>
+                        <select v-model="filters.material" class="w-full bg-slate-50 border-2 border-slate-100 p-2 rounded-xl text-xs font-bold outline-none focus:border-indigo-500">
+                            <option value="3">Maxi</option>
+                            <option value="2">Standard</option>
+                            <option value="1">Mini</option>
+                        </select>
                     </div>
-                    <select v-model="filters.material" class="w-full bg-slate-50 border-2 border-slate-100 p-2 rounded-xl text-xs font-bold outline-none focus:border-indigo-500">
-                        <option value="3">Maxi</option>
-                        <option value="2">Standard</option>
-                        <option value="1">Mini</option>
-                    </select>
-                </div>       
-                <div class="col-span-1 md:col-span-3">                
-                    <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-widest">Âge du plus jeune</h3>
-                    <select v-model="filters.age" class="w-full bg-slate-50 border-2 border-slate-100 p-2 rounded-xl text-xs font-bold outline-none focus:border-indigo-500">
-                        <option :value="99">Sans limite</option>
-                        <option v-for="a in [12,10,8,6]" :value="a">{{a}}-{{a+1}} ans</option>
-                    </select>
+                    <!-- Âge (2 de 5) -->
+                    <div class="col-span-2">                
+                        <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-widest">Âge du plus jeune</h3>
+                        <select v-model="filters.age" class="w-full bg-slate-50 border-2 border-slate-100 p-2 rounded-xl text-xs font-bold outline-none focus:border-indigo-500">
+                            <option :value="99">Sans limite</option>
+                            <option v-for="a in [12,10,8,6]" :value="a">{{a}}-{{a+1}} ans</option>
+                        </select>
+                    </div>
+                     <!-- Botón Flash 52 (1 de 5) -->
+                    <div class="col-span-1 flex flex-col">
+                        <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-widest">Flash 52</h3>
+                        <button @click="filters.onlyFlash = !filters.onlyFlash" 
+                                :class="filters.onlyFlash ? 'btn-player-active' : 'btn-player-inactive'"
+                                class="btn-player w-full flex items-center justify-center py-2">
+                            <i class="fa-solid fa-bolt"></i>
+                        </button>                        
+                    </div>
                 </div>
             </div>
         </section>
@@ -209,6 +222,7 @@
                         <h2 class="text-lg font-black text-slate-900 leading-tight uppercase">{{ game.name }} 
                         <span v-if="game.heart">❤️</span> 
                         <span v-if="game.isNew">✨</span> 
+                        <span v-if="game.isFlash">⚡</span>                            
                         </h2>
                         <p class="text-s text-slate-300 font-bold mt-1 uppercase">{{ game.origin }}</p>
                     </div>
@@ -329,7 +343,8 @@ createApp({
                 //const matchCats = this.filters.cats.length === 0 || this.filters.cats.some(c => game.catBGG[c]);
                 //const matchNew = this.filters.onlyNew ? game.isNew : true;
                 //const matchHeart = this.filters.onlyHeart ? game.heart : true;
-                return matchPlayer && matchAge && matchMaterial //&& matchTime && matchCats && matchNew && matchHeart;
+                const matchFlash = this.filters.onlyFlash ? game.isFlash : true;
+                return matchPlayer && matchAge && matchMaterial && matchFlash; //&& matchTime && matchCats && matchNew && matchHeart;
             }).sort((a, b) => {
                // A. Contamos solo los verdes (🟢) para la selección actual
                 const getGreenCount = (game) => {
