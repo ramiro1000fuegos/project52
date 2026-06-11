@@ -188,7 +188,7 @@
                     </div>
                     <!-- Âge (2 de 5) -->
                     <div class="col-span-2">                
-                        <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-widest">Âge du plus jeune</h3>
+                        <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-widest">Âge</h3>
                         <select v-model="filters.age" class="w-full bg-slate-50 border-2 border-slate-100 p-2 rounded-xl text-xs font-bold outline-none focus:border-indigo-500">
                             <option :value="99">Sans limite</option>
                             <option v-for="a in [12,10,8,6]" :value="a">{{a}}-{{a+1}} ans</option>
@@ -196,7 +196,7 @@
                     </div>
                      <!-- Botón Flash 52 (1 de 5) -->
                     <div class="col-span-1 flex flex-col">
-                        <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-widest">Flash 52</h3>
+                        <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-widest">Flash</h3>
                         <button @click="filters.onlyFlash = !filters.onlyFlash" 
                                 :class="filters.onlyFlash ? 'btn-player-active' : 'btn-player-inactive'"
                                 class="btn-player w-full flex items-center justify-center py-2">
