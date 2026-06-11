@@ -201,13 +201,28 @@
                         <h4 class="font-black uppercase text-slate-600 mb-1 tracking-widest">Fidélité : {{ game.fidelityScore }}/4</h4>
                         <p class="text-slate-600 italic">{{ game.fidelityDetails }}</p>
                     </div>
+
                     <div class="flex flex-col gap-2">
-                        <a :href="game.links.mobile" target="_blank" @click.stop class="bg-indigo-600 text-white text-[12px] font-black py-3 rounded-xl text-center">RÈGLES MOBILE</a>
-                        <div class="grid grid-cols-2 gap-2">
-                            <a :href="game.links.pdf" target="_blank" @click.stop class="bg-red-500 text-white text-[12px] font-black py-3 rounded-xl text-center">PDF</a>
-                            <a :href="game.links.bgg" target="_blank" @click.stop class="bg-slate-800 text-white text-[12px] font-black py-3 rounded-xl text-center">BGG</a>
+                        <!-- Botón Principal: Reglas Móvil (Azul profundo) -->
+                        <a :href="game.links.mobile" target="_blank" @click.stop 
+                           class="bg-indigo-950 text-white text-[12px] font-bold py-3 rounded-xl text-center hover:bg-slate-800 transition-colors">
+                            RÈGLES MOBILE
+                        </a>
+                    
+                        <!-- Botones Secundarios: PDF y BGG (Gris suave) -->
+                        <div class="grid gap-2" :class="game.links.bgg ? 'grid-cols-2' : 'grid-cols-1'">
+                            <a v-if="game.links.pdf" :href="game.links.pdf" target="_blank" @click.stop 
+                               class="bg-slate-50 border border-slate-200 text-slate-600 text-[12px] font-bold py-3 rounded-xl text-center hover:bg-slate-100 transition-colors">
+                                PDF
+                            </a>
+                            <!-- Solo aparece si hay link BGG -->
+                            <a v-if="game.links.bgg" :href="game.links.bgg" target="_blank" @click.stop 
+                               class="bg-slate-50 border border-slate-200 text-slate-600 text-[12px] font-bold py-3 rounded-xl text-center hover:bg-slate-100 transition-colors">
+                                BGG
+                            </a>
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div>
