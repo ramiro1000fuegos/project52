@@ -27,7 +27,7 @@
             display: inline-flex;
             align-items: center;
             gap: 3px;
-            border: 1px solid #e2e8f0; /* Slate 200: Borde estandar */
+            border: 1px solid #cbd5e1; /* Slate 200: Borde estandar */
             padding: 3px 12px;
             border-radius: 50px; /* Forma de cápsula */
             font-size: 0.9rem;
@@ -170,14 +170,14 @@
                     <div class="text-s font-black text-slate-300">#{{ game.rankingBGG }}</div>
                 </div>
 
-                <div class="flex flex-wrap gap-1 mb-1">
+                <div class="flex flex-wrap gap-2 mb-2">
                     <div class="attr-pill"><i class="fa-solid fa-users text-indigo-300"></i> {{ game.nbPersonnes }}</div>
                     <div class="attr-pill"><i class="fa-solid fa-cake-candles text-indigo-300"></i> {{ game.ageMin }}+</div>
                     <div class="attr-pill"><i class="fa-solid fa-box text-indigo-300"></i> {{ game.config }}</div>
                 </div>
 
                 <!-- Pastillas de Categorías BGG -->
-                <div class="flex flex-wrap gap-1 mb-4">
+                <div class="flex flex-wrap gap-2 mb-4">
                     <span v-if="game.catBGG.Famille" class="cat-pill">
                         <i class="fa-solid fa-people-group"></i> Famille
                     </span>
