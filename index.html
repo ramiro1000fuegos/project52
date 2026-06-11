@@ -24,6 +24,7 @@
         .btn-cat-inactive { background-color: white; color: #94a3b8; border-color: #f1f5f9; }
        
         .attr-pill { @apply border border-slate-200 px-3 py-1 rounded-xl text-xs font-bold text-slate-500 bg-slate-50 flex items-center gap-1.5; }
+        .cat-pill { @apply border border-indigo-100 px-2 py-0.5 rounded-full text-[9px] font-black uppercase text-indigo-400 bg-indigo-50/50 flex items-center gap-1; }
         .section-card { @apply bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-slate-200 mb-8; }
         .animate-fade-in { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -130,7 +131,7 @@
             <div class="p-6">
                 <div class="flex justify-between items-start mb-4">
                     <div class="flex-1">
-                        <h2 class="text-lg font-black text-slate-900 leading-tight uppercase">{{ game.name }} <span v-if="game.heart">❤️</span></h2>
+                        <h2 class="text-lg font-black text-slate-900 leading-tight uppercase">{{ game.name }} <span v-if="game.heart">❤️</span></h2> <span v-if="game.heart" class="text-red-500 text-xs">❤️</span>
                         <p class="text-s text-slate-300 font-bold mt-1 uppercase">{{ game.origin }}</p>
                     </div>
                     <div class="text-s font-black text-slate-300">#{{ game.rankingBGG }}</div>
@@ -142,6 +143,22 @@
                     <div class="attr-pill"><i class="fa-solid fa-cake-candles text-indigo-300"></i> {{ game.ageMin }}+</div>
                     <div class="attr-pill"><i class="fa-solid fa-box text-indigo-300"></i> {{ game.config }}</div>
                 </div>
+
+                <!-- Pastillas de Categorías BGG -->
+                <div class="flex flex-wrap gap-1 mb-4">
+                    <span v-if="game.catBGG.Famille" class="cat-pill">
+                        <i class="fa-solid fa-people-group"></i> Famille
+                    </span>
+                    <span v-if="game.catBGG.Party" class="cat-pill">
+                        <i class="fa-solid fa-masks-theater"></i> Party
+                    </span>
+                    <span v-if="game.catBGG.Abstrait" class="cat-pill">
+                        <i class="fa-solid fa-chess-board"></i> Abstrait
+                    </span>
+                    <span v-if="game.catBGG.Stratégie" class="cat-pill">
+                        <i class="fa-solid fa-gears"></i> Stratégie
+                    </span>
+                </div>                
 
                 <p class="text-slate-600 text-s leading-relaxed" :class="expandedId === game.id ? '' : 'line-clamp-1'">{{ game.description }}</p>
 
