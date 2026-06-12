@@ -109,6 +109,17 @@
         
         <!-- 1. HEADER EDITORIAL -->
         <header class="py-4 flex flex-col md:flex-row justify-between items-start gap-8 border-b border-slate-200 mb-4 md:mb-10">
+        
+            <!-- Boutons en haut à droite -->
+            <div class="absolute top-0 right-0 flex gap-2">
+                <button @click="showInfoPopup = true" class="btn-corner" title="Informations">
+                    <i class="fa-solid fa-circle-info"></i>
+                </button>
+                <button @click="showHelpPopup = true" class="btn-corner" title="Aide">
+                    <i class="fa-solid fa-circle-question"></i>
+                </button>
+            </div>
+            
             <div class="max-w-2xl">
                 <h1 class="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter uppercase leading-none mb-4">
                     PROJET <span class="text-indigo-600">52 CARTES</span>
@@ -197,11 +208,20 @@
                     </div>
                 </div>
                 
-                <!-- Autres Filtres: Mitad de ancho en móvil (col-span-1) --> 
-                <!-- Fila de filtros Material (2/5), Edad (2/5) y Flash (1/5) -->
-                <div class="col-span-2 md:col-span-7 grid grid-cols-5 gap-3">
-                    <!-- Material (2 de 5) -->
-                    <div class="col-span-2">
+                <!-- Fila de filtros: Matériel (1/3), Âge (1/3), Boutons (1/3) -->
+                <div class="col-span-2 md:col-span-7 grid grid-cols-3 gap-2 md:gap-4 items-end">                    
+
+                    <!-- Âge (1 de 3) -->
+                    <div class="flex flex-col">              
+                        <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-widest">Âge</h3>
+                        <select v-model="filters.age" class="w-full bg-slate-50 border-2 border-slate-100 p-2 rounded-xl text-xs font-bold outline-none focus:border-indigo-500">
+                            <option :value="99">Sans limite</option>
+                            <option v-for="a in [12,10,8,6]" :value="a">{{a}}-{{a+1}} ans</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Material (1 de 3) -->
+                    <div class="flex flex-col">
                         <div class="flex justify-between items-center mb-2">
                             <h3 class="text-xs font-black uppercase text-slate-400 tracking-widest">Matériel</h3>
                         </div>
@@ -211,22 +231,41 @@
                             <option value="1">Mini</option>
                         </select>
                     </div>
-                    <!-- Âge (2 de 5) -->
-                    <div class="col-span-2">                
-                        <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-widest">Âge</h3>
-                        <select v-model="filters.age" class="w-full bg-slate-50 border-2 border-slate-100 p-2 rounded-xl text-xs font-bold outline-none focus:border-indigo-500">
-                            <option :value="99">Sans limite</option>
-                            <option v-for="a in [12,10,8,6]" :value="a">{{a}}-{{a+1}} ans</option>
-                        </select>
-                    </div>
-                     <!-- Botón Flash 52 (1 de 5) -->
-                    <div class="col-span-1 flex flex-col">
-                        <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-widest">Flash</h3>
-                        <button @click="filters.onlyFlash = !filters.onlyFlash" 
-                                :class="filters.onlyFlash ? 'btn-player-active' : 'btn-player-inactive'"
-                                class="btn-player w-full flex items-center justify-center py-2">
-                            <i class="fa-solid fa-bolt"></i>
-                        </button>                        
+
+               
+                    <!-- 3. Groupe de 3 Boutons (Flash, Fav, New) -->
+                    <div class="grid grid-cols-3 gap-1"> <!-- gap-1 pour serrer les boutons -->
+
+                         <!-- Botón Flash 52 (1 de 9) -->
+                       <div class="flex flex-col">
+                            <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-tighter text-center">Flash</h3>
+                            <button @click="filters.onlyFlash = !filters.onlyFlash" 
+                                    :class="filters.onlyFlash ? 'btn-player-active' : 'btn-player-inactive'"
+                                    class="btn-player w-full flex items-center justify-center py-2 h-[34px]">
+                                <i class="fa-solid fa-bolt"></i>
+                            </button>                        
+                        </div>
+                        
+                         <!-- Botón Coeur (1 de 9) -->
+                        <div class="flex flex-col">
+                            <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-tighter text-center">Fav</h3>
+                            <button @click="filters.onlyHeart = !filters.onlyHeart" 
+                                    :class="filters.onlyHeart ? 'btn-player-active' : 'btn-player-inactive'"
+                                    class="btn-player w-full flex items-center justify-center py-2 h-[34px]">
+                                <i class="fa-solid fa-heart"></i>
+                            </button>                        
+                        </div>
+    
+                         <!-- Botón New (1 de 9) -->
+                        <div class="flex flex-col">
+                            <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-tighter text-center">New</h3>
+                            <button @click="filters.onlyNew = !filters.onlyNew" 
+                                    :class="filters.onlyNew ? 'btn-player-active' : 'btn-player-inactive'"
+                                    class="btn-player w-full flex items-center justify-center py-2 h-[34px]">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            </button>                        
+                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -246,7 +285,7 @@
                     <div class="flex-1">
                         <h2 class="text-lg font-black text-slate-900 leading-tight uppercase">{{ game.name }} 
                         <span v-if="game.heart">❤️</span> 
-                        <span v-if="game.isNew">✨</span> 
+                        <span v-if="game.isNew">🪄</span> 
                         <span v-if="game.isFlash">⚡</span>                            
                         </h2>
                         <p class="text-s text-slate-300 font-bold mt-1 uppercase">{{ game.origin }}</p>
@@ -379,13 +418,10 @@ createApp({
                 const matchAge = game.ageMin <= this.filters.age;
                 const configRank = { 'Mini': 1, 'Standard': 2, 'Maxi': 3 };
                 const matchMaterial = game.configLevel <= this.filters.material;
-                //const timeRank = { '1-Express': 1, '2-Courant': 2, '3-Long': 3 };
-                //const matchTime = timeRank[game.timeStart] <= timeRank[this.filters.time];
-                //const matchCats = this.filters.cats.length === 0 || this.filters.cats.some(c => game.catBGG[c]);
-                //const matchNew = this.filters.onlyNew ? game.isNew : true;
-                //const matchHeart = this.filters.onlyHeart ? game.heart : true;
+                const matchNew = this.filters.onlyNew ? game.isNew : true;
+                const matchHeart = this.filters.onlyHeart ? game.heart : true;
                 const matchFlash = this.filters.onlyFlash ? game.isFlash : true;
-                return matchPlayer && matchAge && matchMaterial && matchFlash; //&& matchTime && matchCats && matchNew && matchHeart;
+                return matchPlayer && matchAge && matchMaterial && matchFlash && matchNew && matchHeart;
             }).sort((a, b) => {
                // A. Contamos solo los verdes (🟢) para la selección actual
                 const getGreenCount = (game) => {
