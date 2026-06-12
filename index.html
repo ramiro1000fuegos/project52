@@ -447,8 +447,19 @@ createApp({
                     header: true, skipEmptyLines: true,
                     complete: (results) => {
                         this.games = results.data.filter(row => row.Nom_Adaptation).map((row, index) => {
+                            const author = row.Auteur || "";
+                            const rawLabels = row.Labels || "";
+                        
+                            // Construimos el ADN del juego: una lista de todas sus etiquetas posibles
+                            const gameLabels = [
+                                ...this.getLabels(row.Nom_Adaptation),
+                                ...this.getLabels(row.Jeu_Origine),
+                                ...this.getLabels(author),
+                                ...this.getLabels(rawLabels)
+                            ];                            
                             return {
                                 id: index, name: row.Nom_Adaptation, description: row.Description, origin: row.Jeu_Origine, ageMin: parseInt(row.Age_Min) || 0, 
+                                author: author, labels: gameLabels,
                                 configLevel: row.Config_materiel ? (parseInt(row.Config_materiel.charAt(0)) || 3) : 3,
                                 config: row.Config_materiel ? (row.Config_materiel.includes('-') ? row.Config_materiel.split('-')[1] : row.Config_materiel) : 'Maxi',
                                 nbPersonnes: row.Nb_personnes, timeStart: row.Temps_avant_demarrage || '3-Long', rankingBGG: row.Ranking_BGG || 'N/A',
@@ -476,6 +487,31 @@ createApp({
             this.selectedPlayers.forEach(p => { const status = game.players[p]; if (status?.includes('🟢')) score += 100; else if (status?.includes('🟡')) score += 10; });
             return score;
         },
+        normalize(text) {
+            if (!text) return "";
+            return text.toString().toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // 2. Quita acentos
+                .replace(/[^a-z0-9']/g, " ")                      // 1. Solo letras, números y el símbolo '
+                .replace(/([aeiou])s\b/g, "$1")                  // 4. Plurales: cartas -> carta
+                .replace(/([aeiou])x\b/g, "$1")                  // 4. Plurales: jeux -> jeu
+                .replace(/\s+/g, " ")                            // 5. Quita dobles espacios
+                .trim();
+        },        
+        getLabels(text) {
+            if (!text) return [];
+            const normalized = this.normalize(text);
+            
+            // Extraemos bloques entre '...'
+            const quotes = normalized.match(/'([^']+)'/g) || [];
+            const quotedLabels = quotes.map(l => l.replace(/'/g, ""));
+            
+            // Extraemos palabras fuera de las comillas
+            const remaining = normalized.replace(/'([^']+)'/g, " ");
+            const wordLabels = remaining.split(" ").filter(w => w.length > 0);
+            
+            return [...quotedLabels, ...wordLabels];
+        }
+        
     }
 }).mount('#app')
 </script>
