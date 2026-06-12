@@ -13,15 +13,19 @@
     <style>
         [v-cloak] { display: none; }
         /* Botones de Jugadores */
-        .btn-player { border: 2px solid #e2e8f0; transition: all 0.2s; font-weight: bold; border-radius: 0.75rem; text-align: center; padding: 0.5rem 0; font-size: 0.875rem; cursor: pointer; }
+        .btn-player { 
+            border: 2px solid #e2e8f0;
+            transition: all 0.2s; 
+            font-weight: bold; 
+            border-radius: 0.75rem; 
+            text-align: center; 
+            padding: 0.5rem 0; 
+            font-size: 0.875rem; 
+            cursor: pointer; 
+        }
         .btn-player-active { background-color: #1e1b4b; border-color: #1e1b4b; color: white; }
         .btn-player-inactive { background-color: white; color: #64748b; }
-        .btn-player-inactive:hover { border-color: #444444}
-
-        /* Botones de Categorías y RFK */
-        .btn-cat { border: 2px solid #f1f5f9; transition: all 0.2s; font-weight: 900; font-size: 10px; text-transform: uppercase; padding: 0.6rem 0.75rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; cursor: pointer; }
-        .btn-cat-active { background-color: #1e1b4b; border-color: #1e1b4b; color: white; }
-        .btn-cat-inactive { background-color: white; color: #94a3b8; border-color: #f1f5f9; }
+        .btn-player-inactive:hover { border-color: #444444 }
 
         .attr-pill {
             display: inline-flex;
@@ -51,7 +55,7 @@
             color: #312e81;     /* Indigo 900: Azul casi negro */
             background-color: #eff6ff; /* Azul muy muy claro */
         }        
-        /*.cat-pill { @apply border border-indigo-100 px-2 py-0.5 rounded-full text-[9px] font-black uppercase text-indigo-400 bg-indigo-50/50 flex items-center gap-1; }*/
+
         .section-card { @apply bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-slate-200 mb-8; }
         .animate-fade-in { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { 
@@ -67,6 +71,37 @@
             margin-bottom: 12px;       /* Espacio con los botones de abajo */
             font-size: 0.9rem;            
         }
+
+        .btn-corner {
+            width: 42px; /* Tamaño táctil ideal */
+            height: 42px;
+            min-width: 42px; /* Evita que se encoja en pantallas pequeñas */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px; /* Círculo perfecto */
+            background-color: white;
+            border: 2px solid #f1f5f9;
+            color: #94a3b8;
+            transition: all 0.2s;
+            cursor: pointer;
+            font-size: 1.4rem;
+            font-weight: 800;                        
+        }
+        .btn-corner:hover {
+            border-color: #cbd5e1;
+            color: #6366f1;
+            background-color: #f8fafc;
+            font-size: 1.4rem;
+            font-weight: 800;            
+        }
+        
+        /* Ajuste para el contenedor de la búsqueda para que los círculos no se peguen */
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 8px; /* Espacio entre el input y los botones */
+        }        
         
         /* 1. Botón Principal (Reglas Móvil) - Indigo Profundo: Denota autoridad y acción principal */
         .btn-mobile {
@@ -101,6 +136,33 @@
             color: #1e293b;            /* Slate 800: texto un poco más oscuro */ 
         }
         
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.7); /* Slate 900 opaco */
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 2rem;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            max-width: 28rem;
+            width: 100%;
+            position: relative;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+       
     </style>
 </head>
 <body class="bg-slate-50 p-4 font-sans text-slate-900 tracking-tight">
@@ -109,8 +171,7 @@
         
         <!-- 1. HEADER EDITORIAL -->
         <header class="py-4 flex flex-col md:flex-row justify-between items-start gap-8 border-b border-slate-200 mb-4 md:mb-10">
-        
-            
+          
             <div class="max-w-2xl">
                 <h1 class="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter uppercase leading-none mb-4">
                     PROJET <span class="text-indigo-600">52 CARTES</span>
@@ -124,9 +185,9 @@
         <!-- 2. RECHERCHE & FILTRES -->
         <section id="filter-section" class="section-card sticky top-0 rounded-t-none z-40 bg-white/95 backdrop-blur-sm shadow-xl mb-6 rounded-xl">
 
-            <!-- INSERTAR AQUÍ: Barra de Búsqueda (P-2 o P-4 según el relleno de tu card) -->
-            <div class="px-2 pt-2 md:px-4 md:pt-4">
-                <div class="relative group">
+            <div class="px-2 pt-2 md:px-4 md:pt-4 flex items-center search-container">
+                <!-- El buscador ocupa el espacio sobrante -->
+                <div class="relative group flex-1">
                     <!-- Icono Lupa -->
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-indigo-600 transition-colors">
                         <i class="fa-solid fa-magnifying-glass text-xs"></i>
@@ -145,6 +206,24 @@
                         <i class="fa-solid fa-circle-xmark text-sm"></i>
                     </button>
                 </div>
+
+                <!-- 
+                    <div class="flex gap-1 text-slate-600 hover:text-slate-900 transition-colors h-10 w-10 mx-auto">
+                    <button @click="showInfoPopup = true" class="btn-corner" title="Informations">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </button>
+                    <button @click="showHelpPopup = true" class="btn-corner" title="Aide">
+                        <i class="fa-solid fa-circle-question"></i>
+                    </button>
+                </div>         -->
+                <!-- Botones de ayuda (Círculos) -->
+                <button @click="showHelpPopup = true" class="btn-corner" title="Aide">
+                    <i class="fa-solid fa-question text-sm"></i> <!--<i class="fa-solid fa-circle-question"></i>-->
+                </button>                
+                <button @click="showInfoPopup = true" class="btn-corner" title="Informations">
+                    <i class="fa-solid fa-info text-sm"></i> <!-- <i class="fa-solid fa-circle-info"></i>-->
+                </button>
+                
             </div>
 
             
@@ -285,8 +364,8 @@
                 </div>
 
                 <div class="flex flex-wrap gap-2 mb-2">
-                    <div class="attr-pill"><i class="fa-solid fa-users text-indigo-300"></i> {{ game.nbPersonnes }}</div>
-                    <div class="attr-pill"><i class="fa-solid fa-cake-candles text-indigo-300"></i> {{ game.ageMin }}+</div>
+                    <div class=""><i class="fa-solid fa-users text-indigo-300"></i> {{ game.nbPersonnes }}</div>
+                    <div class=""><i class="fa-solid fa-cake-candles text-indigo-300"></i> {{ game.ageMin }}+</div>
                     <div class="attr-pill"><i class="fa-solid fa-box text-indigo-300"></i> {{ game.config }}</div>
                 </div>
 
@@ -359,6 +438,47 @@
         </div>
     </div>
 
+    <!-- Popups (Modals) -->
+    <!-- POPUP AYUDA (?) -->
+    <div v-if="showHelpPopup" class="modal-overlay" @click.self="showHelpPopup = false">
+        <div class="modal-content animate-fade-in">
+            <button @click="showHelpPopup = false" class="absolute top-4 right-6 text-slate-400 hover:text-slate-900">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            
+            <h3 class="text-lg font-black text-indigo-600 leading-tight uppercase">Filtres joueurs</h3>
+            <p>Sélectionnez une ou plusieurs configurations. Les jeux idéaux pour toutes tes sélections apparaissent en premier, puis ceux idéaux pour l'une d'elles, puis les compatibles.</p>
+
+            <h3 class="text-lg font-black text-indigo-600 leading-tight uppercase mt-4">Matériel</h3>
+            <p><b>Mini</b> = 1 jeu de 52 cartes, papier, stylo</p>
+            <p><b>Standard</b> = 2 jeux, jetons, dés, quelques pages imprimées réutilisables (inclut Mini)</p>
+            <p><b>Maxi</b> = matériel additionnel ou spécial (inclut Standard)</p>
+
+            <h3 class="text-lg font-black text-indigo-600 leading-tight uppercase mt-4">Icônes</h3>
+            <p><b>Flash</b> = rapide à expliquer et à jouer</p>
+            <p><b>Fav</b> = mes coups de cœur</p>
+            <p><b>New</b> = ajouts du mois</p>
+
+            <h3 class="text-lg font-black text-indigo-600 leading-tight uppercase mt-4">Recherche textuelle</h3>
+            <p>Utilisez-la pour chercher le titre original, l'auteur, la date de publication, le titre de l'adaptation, la catégorie BGG, le matériel utilisé, une mécanique…</p>
+            <p class="text-slate-500"><i>Ex : "party", "dés", "plis", "Knizia", "2019", "coopératif"</i></p>
+        </div>
+    </div>
+
+    <!-- POPUP INFO (i) -->
+    <div v-if="showInfoPopup" class="modal-overlay" @click.self="showInfoPopup = false">
+        <div class="modal-content animate-fade-in">
+            <button @click="showInfoPopup = false" class="absolute top-4 right-6 text-slate-400 hover:text-slate-900">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+
+            <h3 class="text-lg font-black text-indigo-600 leading-tight uppercase">À propos des adaptations</h2>
+            <p class="mt-4">La plupart des jeux sont des adaptations de titres publiés, rendues jouables avec du matériel courant.</p>
+            <p class="mt-4">Règles, illustrations et éléments protégés sont recréés ; le jeu original est toujours cité.</p>
+            <p class="mt-4">Ce projet n'est pas un substitut — il encourage à découvrir les œuvres de leurs auteurs.</p>
+        </div>
+    </div>
+    
 </div>
 
 <script>
@@ -373,6 +493,8 @@ createApp({
             showLegend: false,
             showRange6to10: false,  
             showRange11to20: false,             
+            showInfoPopup: false,
+            showHelpPopup: false,            
             selectedPlayers: [],
             sortBy: 'ideal',
             searchQuery: '', 
